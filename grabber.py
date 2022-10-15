@@ -127,21 +127,21 @@ class Grabber:
         #while True:
             if x <= trigger_hitbox and x>=0:
                  threading.Thread(target=self._click).start()
-                 time.sleep(trigger_sleep)
+                 #time.sleep(trigger_sleep)
             else:
                  if x >= -(trigger_hitbox) and x<=0:
                     threading.Thread(target=self._click).start()
-                    time.sleep(trigger_sleep)
+                   #time.sleep(trigger_sleep)
 
     def flick_trigger(self, x, flick_sleep, flick_hitbox):
         #while True:
             if x <= flick_hitbox + flick_hitbox and x>=0:
                  threading.Thread(target=self._click).start()
-                 time.sleep(flick_sleep)
+                 #time.sleep(flick_sleep)
             else:
                  if x >= -(flick_hitbox)-flick_hitbox and x<=0:
                     threading.Thread(target=self._click).start()
-                    time.sleep(flick_sleep)
+                    #time.sleep(flick_sleep)
 
     def _click(self):        
         ud_mouse.click_mouse()
