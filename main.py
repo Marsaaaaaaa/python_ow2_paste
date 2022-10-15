@@ -87,7 +87,7 @@ while True:
         else :
             if grabber.is_activated(flick_key):
                 grabber.flick_mouse(x, y)
-                grabber.flick_mouse(x/3, y/3)                
+                #grabber.flick_mouse(x/3, y/3)                
                 grabber.flick_trigger(x, flick_sleep, flick_hitbox)
             else :
                  if grabber.is_activated(trigger_key):
