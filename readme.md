@@ -1,7 +1,7 @@
 features added:
 
 trigger bot settings
-flick settings
+flick settings (broken rn, fix is easy ill do it later)
 kill switch
 much faster screengrab
 
