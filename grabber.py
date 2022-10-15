@@ -1,142 +1,126 @@
 
-import cv2
-import win32api, win32con, win32ui, win32gui
-import numpy as np
-import threading
+from ast import While
+from grabber import *
 import time
-import random
-import dxcam
+from os import system
+import math
+import win32gui
+import win32con
+import os
+import cv2
+
+# fov, over 290 will break shit, 
+fov = 150
+# lower to get more fps but worse performance
+fps = 144
+
+# list of virtual keys: https://learn.microsoft.com/windows/win32/inputdev/virtual-key-codes
+# default = mouse1
+aim_key = 0x01
+
+# default = alt
+flick_key = 0x12
+
+# default = v
+trigger_key = 0x56
+
+hitbox_size = 0.7
+flick_hitbox_scale = 1
+trigger_sleep = 0
 
 
-import clr
-# change this to wherever your built DLL is
-clr.AddReference('location of ur dll\\ClassLibrary1\\ClassLibrary1.dll')
-from ClassLibrary1 import Class1
-ud_mouse = Class1()
-ud_mouse.Run_Me()
+grabber = Grabber(
+    # x and y accel. higher = faster
+    x_multiplier = 0.2,
+    y_multiplier = 0.08,
+    # idk this shit is supposed to set the height of where u aim but I think its broken
+    y_difference = 5,
+    # flick speed multiplier ( flick speed = x_multiplier*flick_speed)
+    flick_speed = 5.5
+)
+
+#closes the cheat
+kill_switch = 0x2E
+
+
+
+#################################################################################################
+#################################################################################################
+#################################################################################################
+#################################################################################################
+
+
+left, top = (1920 - fov) // 2, (1080 - fov) // 2
+right, bottom = left + fov, top + fov
+region = (left, top, right, bottom)
+camera = dxcam.create(region=region, output_color="RGB")
+camera.start(target_fps=fps, video_mode=True)
 
 
 
 
 
-class Grabber:
-    def __init__(self, x_multiplier, y_multiplier, y_difference, flick_speed) -> None:
-        # self.lower = np.array([139, 96, 129], np.uint8)
-        # self.upper = np.array([169, 255, 255], np.uint8)
-        self.lower = np.array([139, 95, 154], np.uint8)
-        self.upper = np.array([153, 255, 255], np.uint8)
-        self.x_multiplier = x_multiplier         # multiplier on x-coordinate
-        self.y_multiplier = y_multiplier         # multiplier on y-coordinate
-        self.y_difference = y_difference         # the amount of pixels added to the y-coordinate (aims higher)
-        self.flick_speed = flick_speed
 
-    def build_title(self, length) -> str:
-        """return a randomly generated window title to prevent detections"""
-        chars = [
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '!', '@', '#',
-            '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '/', '?'
-        ]
-        return ''.join(random.choice(chars) for character in range(length))
+grabber.find_dimensions(fov)
+random_title = grabber.build_title(20)
+system('title ' + f"'{random_title}'")
+system('cls')
 
-    def find_dimensions(self, box_size): 
-        """Calculates constants required for the bot."""
-        self.box_size = box_size
-        self.box_middle = int(self.box_size / 2) 
-        self.y = int(((1080 / 2) - (self.box_size / 2))) 
-        self.x = int(((1920 / 2) - (self.box_size / 2))) 
+print(f'box_size = {grabber.box_size}')
+print(f'random_title = {random_title}')
+print(f"x accel = {grabber.x_multiplier}")
+print(f"y accel = {grabber.y_multiplier}")
+print(f"flick speed = {grabber.flick_speed}")
 
-        
 
-    def process_frame(self, frame):
-        """Performs operations on a frame to improve contour detection."""
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        processed = cv2.inRange(hsv, self.lower, self.upper)
-        processed = cv2.morphologyEx(processed, cv2.MORPH_CLOSE, np.ones((10, 10), np.uint8))
-        dilatation_size = 3
-        dilation_shape = cv2.MORPH_RECT
-        # dilation_shape = cv2.MORPH_ELLIPSE
-        # dilation_shape = cv2.MORPH_CROSS
-        element = cv2.getStructuringElement(dilation_shape, (2 * dilatation_size + 1, 2 * dilatation_size + 1),
-                                    (dilatation_size, dilatation_size))
-        processed = cv2.dilate(processed, element)
-        processed = cv2.blur(processed, (4, 4))
-        return processed
+Dababy = True
+PID = os.getpid()
+ 
 
-    def detect_contours(self, frame, minimum_size):
-        """Returns contours larger then a specified size in a frame."""
-        contours, hierarchy = cv2.findContours(frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        large_contours = []
-        if len(contours) != 0:
-            for i in contours:
-                if ud_mouse.Check(cv2.contourArea(i), minimum_size):
-                   if cv2.contourArea(i) > minimum_size:
-                       large_contours.append(i)
-        return large_contours
+while True:
 
-    def scale_contour(self,cnt, scale:float):
-        M = cv2.moments(cnt)
-        x = int(M['m10']/M['m00'])
-        y = int(M['m01']/M['m00'])
+    if grabber.is_activated(kill_switch):
+        os.kill(PID)               
 
-        center = cnt - [x, y]
-        cnt_scaled = center * scale
-        cnt_scaled = cnt_scaled + [x, y]
-        cnt_scaled = cnt_scaled.astype(np.int32)
+    last_time = time.time()
+    count = 0
+    og = np.array(camera.get_latest_frame())
+    frame = grabber.process_frame(og)
+    contours = grabber.detect_contours(frame, 100)
+    if contours:
+        rec, x, y = grabber.compute_centroid(contours)
+        if grabber.is_activated(aim_key):
+            grabber.move_mouse(x, y)
 
-        return cnt_scaled
+        if grabber.is_activated(flick_key):
+                grabber.flick_mouse(x , y)            
+                if  grabber.on_target(contours, hitbox_size*flick_hitbox_scale):
+                    grabber.trigger()
+
+
+
+
+        if grabber.is_activated(trigger_key) and grabber.on_target(contours, hitbox_size):
+                     time.sleep(trigger_sleep)
+                     grabber.trigger()
+
     
-    def on_target(self, contour, hitbox):
-        for c in contour:
-            cont = self.scale_contour(c, hitbox)
-            test = cv2.pointPolygonTest(cont,( self.box_middle, self.box_middle),False)
-            if test >= 0:
-                return True
-        return False
-
-    def compute_centroid(self, contour):
-        """Returns x- and y- coordinates of the center of the largest contour."""
-        self.contour = contour
-        c = max(contour, key=cv2.contourArea)
-        rectangle = np.int0(cv2.boxPoints(cv2.minAreaRect(c)))
-        new_box = []
-        for point in rectangle:
-            point_x = point[0]
-            point_y = point[1]
-            new_box.append([round(point_x, -1), round(point_y, -1)])
-        M = cv2.moments(np.array(new_box))
-        if M['m00']:
-            center_x = (M['m10'] / M['m00'])
-            center_y = (M['m01'] / M['m00'])
-            x = -(self.box_middle - center_x)
-            y = -(self.box_middle - center_y)
-            return [], x, y
-
-    def is_activated(self, key_code) -> bool:
-        return ud_mouse.is_activated(key_code)
-
-    def flick_mouse(self, x, y):
-        threading.Thread(target=self._move_mouse, args=[x, y, self.x_multiplier*self.flick_speed, self.y_multiplier*(self.flick_speed/2), self.y_difference]).start()
-
-    def move_mouse(self, x, y):
-        threading.Thread(target=self._move_mouse, args=[x, y, self.x_multiplier, self.y_multiplier, self.y_difference]).start()
-
-    def _move_mouse(self, x, y, x_multiplier, y_multiplier, y_difference):
-        ud_mouse.move_mouse(x, y, self.box_size, x_multiplier, y_multiplier, y_difference)
 
 
-    def click(self):
-        threading.Thread(target=self._click).start()
 
-    def trigger(self):
-        threading.Thread(target=self._click).start()
-        #time.sleep(trigger_sleep)
 
-    def _click(self):        
-        ud_mouse.click_mouse()
-    
+# uncomment these lines to show conturs and the screen.
+# note: this has a performance impact in my testing.
+
+
+        cv2.drawContours(og, contours, -1, (0, 0, 0), 4)
+        if rec:
+            cv2.drawContours(og, rec, -1, (0, 255, 0), 4)
+    cv2.imshow('frame', og)
+    if (cv2.waitKey(1) & 0x2D) == ord('q'):
+        cv2.destroyAllWindows()
+        exit()
+
+
 
 
