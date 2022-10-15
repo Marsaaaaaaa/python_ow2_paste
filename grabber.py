@@ -10,28 +10,13 @@ import dxcam
 
 import clr
 # change this to wherever your built DLL is
-clr.AddReference('location of this shit => \\ClassLibrary1.dll')
-# reminder all 3 dlls have to be in the same folder
+clr.AddReference('location of ur dll\\ClassLibrary1\\ClassLibrary1.dll')
 from ClassLibrary1 import Class1
 ud_mouse = Class1()
 ud_mouse.Run_Me()
 
-# higher then 290 breaks the thing or sum idk
-fov = 150
 
-# lower to get more fps but worse performance
-fps = 144
-        
 
-     
-
-left, top = (1920 - fov) // 2, (1080 - fov) // 2
-right, bottom = left + fov, top + fov
-region = (left, top, right, bottom)
-camera = dxcam.create(region=region, output_color="RGB")
-camera.start(target_fps=fps, video_mode=True)
-time.sleep(1)
-    
 
 
 class Grabber:
@@ -56,32 +41,31 @@ class Grabber:
             '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '/', '?'
         ]
         return ''.join(random.choice(chars) for character in range(length))
+
     def find_dimensions(self, box_size): 
         """Calculates constants required for the bot."""
         self.box_size = box_size
         self.box_middle = int(self.box_size / 2) 
-        top = int(((1080 / 2) - (self.box_size / 2))) 
-        left = int(((1920 / 2) - (self.box_size / 2))) 
-        self.dimensions = ( left,  top, left + self.box_size, top + self.box_size)
+        self.y = int(((1080 / 2) - (self.box_size / 2))) 
+        self.x = int(((1920 / 2) - (self.box_size / 2))) 
+
         
-    def capture_frame(self): 
-        return np.array(camera.get_latest_frame())
-        # with mss() as sct:    
-        #return np.array(sct.grab(self.dimensions))
+
     def process_frame(self, frame):
         """Performs operations on a frame to improve contour detection."""
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         processed = cv2.inRange(hsv, self.lower, self.upper)
         processed = cv2.morphologyEx(processed, cv2.MORPH_CLOSE, np.ones((10, 10), np.uint8))
-        dilatation_size = 15
-        # dilation_shape = cv2.MORPH_RECT
+        dilatation_size = 3
+        dilation_shape = cv2.MORPH_RECT
         # dilation_shape = cv2.MORPH_ELLIPSE
-        dilation_shape = cv2.MORPH_CROSS
+        # dilation_shape = cv2.MORPH_CROSS
         element = cv2.getStructuringElement(dilation_shape, (2 * dilatation_size + 1, 2 * dilatation_size + 1),
                                     (dilatation_size, dilatation_size))
         processed = cv2.dilate(processed, element)
-        processed = cv2.blur(processed, (8, 8))
+        processed = cv2.blur(processed, (4, 4))
         return processed
+
     def detect_contours(self, frame, minimum_size):
         """Returns contours larger then a specified size in a frame."""
         contours, hierarchy = cv2.findContours(frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -89,11 +73,33 @@ class Grabber:
         if len(contours) != 0:
             for i in contours:
                 if ud_mouse.Check(cv2.contourArea(i), minimum_size):
-                 #if cv2.contourArea(i) > minimum_size:
-                    large_contours.append(i)
+                   if cv2.contourArea(i) > minimum_size:
+                       large_contours.append(i)
         return large_contours
+
+    def scale_contour(self,cnt, scale:float):
+        M = cv2.moments(cnt)
+        x = int(M['m10']/M['m00'])
+        y = int(M['m01']/M['m00'])
+
+        center = cnt - [x, y]
+        cnt_scaled = center * scale
+        cnt_scaled = cnt_scaled + [x, y]
+        cnt_scaled = cnt_scaled.astype(np.int32)
+
+        return cnt_scaled
+    
+    def on_target(self, contour, hitbox):
+        for c in contour:
+            cont = self.scale_contour(c, hitbox)
+            test = cv2.pointPolygonTest(cont,( self.box_middle, self.box_middle),False)
+            if test >= 0:
+                return True
+        return False
+
     def compute_centroid(self, contour):
         """Returns x- and y- coordinates of the center of the largest contour."""
+        self.contour = contour
         c = max(contour, key=cv2.contourArea)
         rectangle = np.int0(cv2.boxPoints(cv2.minAreaRect(c)))
         new_box = []
@@ -108,6 +114,7 @@ class Grabber:
             x = -(self.box_middle - center_x)
             y = -(self.box_middle - center_y)
             return [], x, y
+
     def is_activated(self, key_code) -> bool:
         return ud_mouse.is_activated(key_code)
 
@@ -120,28 +127,13 @@ class Grabber:
     def _move_mouse(self, x, y, x_multiplier, y_multiplier, y_difference):
         ud_mouse.move_mouse(x, y, self.box_size, x_multiplier, y_multiplier, y_difference)
 
+
     def click(self):
         threading.Thread(target=self._click).start()
 
-    def trigger(self, x, trigger_sleep, trigger_hitbox):
-        #while True:
-            if x <= trigger_hitbox and x>=0:
-                 threading.Thread(target=self._click).start()
-                 #time.sleep(trigger_sleep)
-            else:
-                 if x >= -(trigger_hitbox) and x<=0:
-                    threading.Thread(target=self._click).start()
-                   #time.sleep(trigger_sleep)
-
-    def flick_trigger(self, x, flick_sleep, flick_hitbox):
-        #while True:
-            if x <= flick_hitbox + flick_hitbox and x>=0:
-                 threading.Thread(target=self._click).start()
-                 #time.sleep(flick_sleep)
-            else:
-                 if x >= -(flick_hitbox)-flick_hitbox and x<=0:
-                    threading.Thread(target=self._click).start()
-                    #time.sleep(flick_sleep)
+    def trigger(self):
+        threading.Thread(target=self._click).start()
+        #time.sleep(trigger_sleep)
 
     def _click(self):        
         ud_mouse.click_mouse()
