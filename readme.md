@@ -1,15 +1,22 @@
 features added:
 
 trigger bot settings
-flick settings (broken rn, fix is easy ill do it later)
+
+flick settings (looks like shit unless you dont move ur mouse)
+
 kill switch
+
 much faster screengrab
 
-follow the instructions of the original uc post and then replace grabber.py and main.py
+
+follow the instructions of the original uc post and then replace grabber.py and main.py.
+
 You ll then have to change some settings in BOTH files, they are pretty hard to miss.
+
 most important is including your dll location
 
 I made this at 2 am dont expect much
+
 
 
 pasted from:
