@@ -10,7 +10,7 @@ import dxcam
 
 import clr
 # change this to wherever your built DLL is
-clr.AddReference('C:ur dll location\\DLL\\ClassLibrary1\\ClassLibrary1.dll')
+clr.AddReference('C\\DLL\\ClassLibrary1\\ClassLibrary1.dll')
 from ClassLibrary1 import Class1
 ud_mouse = Class1()
 ud_mouse.Run_Me()

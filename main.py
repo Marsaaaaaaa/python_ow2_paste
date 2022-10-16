@@ -12,8 +12,7 @@ import cv2
 # fov, over 290 will break shit, 
 fov = 150
 # lower to get more fps but worse performance
-fps = 144
-
+fps = 160
 # list of virtual keys: https://learn.microsoft.com/windows/win32/inputdev/virtual-key-codes
 # default = mouse1
 aim_key = 0x01
@@ -24,9 +23,9 @@ flick_key = 0x12
 # default = v
 trigger_key = 0x56
 
-hitbox_size = 0.7
+hitbox_size = 0.6
 flick_hitbox_scale = 1
-trigger_sleep = 0
+trigger_sleep = 0.1
 
 
 grabber = Grabber(
@@ -53,8 +52,8 @@ kill_switch = 0x2E
 left, top = (1920 - fov) // 2, (1080 - fov) // 2
 right, bottom = left + fov, top + fov
 region = (left, top, right, bottom)
-camera = dxcam.create(region=region, output_color="RGB")
-camera.start(target_fps=fps, video_mode=True)
+camera = dxcam.create(region=region, output_color="RGB", max_buffer_len=512)
+camera.start(target_fps=fps)
 
 
 grabber.find_dimensions(fov)
@@ -92,6 +91,7 @@ while True:
                 grabber.flick_mouse(x , y)            
                 if  grabber.on_target(contours, hitbox_size*flick_hitbox_scale):
                     grabber.trigger()
+                    time.sleep(trigger_sleep)
 
 
 
@@ -99,6 +99,7 @@ while True:
         if grabber.is_activated(trigger_key) and grabber.on_target(contours, hitbox_size):
                      time.sleep(trigger_sleep)
                      grabber.trigger()
+                     time.sleep(trigger_sleep)
 
     
 
