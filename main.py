@@ -7,7 +7,7 @@ import win32gui
 import win32con
 import os
 import cv2
- 
+#from overlay import *
 
 # fov, over 290 will break shit, 
 fov = 150
@@ -52,6 +52,7 @@ kill_switch = 0x2E
 left, top = (1920 - fov) // 2, (1080 - fov) // 2
 right, bottom = left + fov, top + fov
 region = (left, top, right, bottom)
+time.sleep(1)
 camera = dxcam.create(region=region, output_color="RGB", max_buffer_len=512)
 camera.start(target_fps=fps)
 
@@ -67,48 +68,38 @@ print(f"x accel = {grabber.x_multiplier}")
 print(f"y accel = {grabber.y_multiplier}")
 print(f"flick speed = {grabber.flick_speed}")
 
+#################################################################################################
+
 
 Dababy = True
 PID = os.getpid()
- 
-
 while True:
 
-    if grabber.is_activated(kill_switch):
-        os.kill(PID)               
+    #Draw.outline((1920-fov)/2, (1080-fov)/2, fov, fov, 0.5, Draw.red)
+              
 
     last_time = time.time()
     count = 0
     og = np.array(camera.get_latest_frame())
     frame = grabber.process_frame(og)
     contours = grabber.detect_contours(frame, 100)
+
     if contours:
         rec, x, y = grabber.compute_centroid(contours)
         if grabber.is_activated(aim_key):
             grabber.move_mouse(x, y)
 
         if grabber.is_activated(flick_key):
-                grabber.flick_mouse(x , y)            
-                if  grabber.on_target(contours, hitbox_size*flick_hitbox_scale):
-                    grabber.trigger()
-                    time.sleep(trigger_sleep)
-
-
-
+            grabber.flick_mouse(x , y)            
+            if  grabber.on_target(contours, hitbox_size*flick_hitbox_scale):
+                grabber.trigger()
+                time.sleep(trigger_sleep)
+                count = count + 1
 
         if grabber.is_activated(trigger_key) and grabber.on_target(contours, hitbox_size):
-                     time.sleep(trigger_sleep)
-                     grabber.trigger()
-                     time.sleep(trigger_sleep)
-
-    
-
-
-
-
-# uncomment these lines to show conturs and the screen.
-# note: this has a performance impact in my testing.
-
+            time.sleep(trigger_sleep)
+            grabber.trigger()
+            count = count + 1
 
         cv2.drawContours(og, contours, -1, (0, 0, 0), 4)
         if rec:
@@ -117,6 +108,24 @@ while True:
     if (cv2.waitKey(1) & 0x2D) == ord('q'):
         cv2.destroyAllWindows()
         exit()
+
+    if count >= 10:
+        camera.stop()
+        camera.start(target_fps=fps)
+        count = 0
+
+
+
+
+
+    if grabber.is_activated(kill_switch):
+        camera.stop()
+        os.kill(PID) 
+        
+
+
+# uncomment these lines to show conturs and the screen.
+# note: this has a performance impact in my testing.
 
 
 
