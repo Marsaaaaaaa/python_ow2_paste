@@ -6,17 +6,18 @@ import threading
 import time
 import random
 import dxcam
+from numba import jit
 
 
 import clr
 # change this to wherever your built DLL is
-clr.AddReference('C\\DLL\\ClassLibrary1\\ClassLibrary1.dll')
+clr.AddReference(' compiled dll location\\DLL\\ClassLibrary1\\ClassLibrary1.dll')
 from ClassLibrary1 import Class1
 ud_mouse = Class1()
 ud_mouse.Run_Me()
 
 
-
+#predict = Prediction()
 
 
 class Grabber:
@@ -41,7 +42,7 @@ class Grabber:
             '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '/', '?'
         ]
         return ''.join(random.choice(chars) for character in range(length))
-
+ 
     def find_dimensions(self, box_size): 
         """Calculates constants required for the bot."""
         self.box_size = box_size
@@ -55,6 +56,7 @@ class Grabber:
         """Performs operations on a frame to improve contour detection."""
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         processed = cv2.inRange(hsv, self.lower, self.upper)
+
         processed = cv2.morphologyEx(processed, cv2.MORPH_CLOSE, np.ones((10, 10), np.uint8))
         dilatation_size = 15
         # dilation_shape = cv2.MORPH_RECT
@@ -63,7 +65,7 @@ class Grabber:
         element = cv2.getStructuringElement(dilation_shape, (2 * dilatation_size + 1, 2 * dilatation_size + 1),
                                     (dilatation_size, dilatation_size))
         processed = cv2.dilate(processed, element)
-        processed = cv2.blur(processed, (8, 8))
+        processed = cv2.blur(processed, (8, 8))        
         return processed
 
     def detect_contours(self, frame, minimum_size):
@@ -88,7 +90,7 @@ class Grabber:
         cnt_scaled = cnt_scaled.astype(np.int32)
 
         return cnt_scaled
-    
+
     def on_target(self, contour, hitbox):
         for c in contour:
             cont = self.scale_contour(c, hitbox)
@@ -113,7 +115,11 @@ class Grabber:
             center_y = (M['m01'] / M['m00'])
             x = -(self.box_middle - center_x)
             y = -(self.box_middle - center_y)
+            self.cx = x
+            self.cy = y
             return [], x, y
+
+
 
     def is_activated(self, key_code) -> bool:
         return ud_mouse.is_activated(key_code)
@@ -122,18 +128,41 @@ class Grabber:
         threading.Thread(target=self._move_mouse, args=[x, y, self.x_multiplier*self.flick_speed, self.y_multiplier*(self.flick_speed/2), self.y_difference]).start()
 
     def move_mouse(self, x, y):
-        threading.Thread(target=self._move_mouse, args=[x, y, self.x_multiplier, self.y_multiplier, self.y_difference]).start()
+       threading.Thread(target=self._move_mouse, args=[x, y, self.x_multiplier, self.y_multiplier, self.y_difference]).start()
 
     def _move_mouse(self, x, y, x_multiplier, y_multiplier, y_difference):
         ud_mouse.move_mouse(x, y, self.box_size, x_multiplier, y_multiplier, y_difference)
 
+    def shift(self):
+        threading.Thread(target= self._shift).start()
+
+    def _shift(self):
+        ud_mouse.simulate_shift()
+
+    def Q(self):
+        threading.Thread(target= self._Q).start()
+
+    def _Q(self):
+        ud_mouse.simulate_Q()
+
+    def E(self):
+        threading.Thread(target= self._E).start()
+
+    def _E(self):
+        ud_mouse.simulate_E()
+
+    def mouse_right(self):
+        threading.Thread(target= self._mouse_right).start()
+
+    def _mouse_right(self):
+        ud_mouse.rclick_mouse()        
 
     def click(self):
         threading.Thread(target=self._click).start()
 
     def trigger(self):
         threading.Thread(target=self._click).start()
-        #time.sleep(trigger_sleep)
+        time.sleep(0.3)
 
     def _click(self):        
         ud_mouse.click_mouse()
