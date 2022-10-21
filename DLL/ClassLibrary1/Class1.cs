@@ -71,8 +71,9 @@ namespace ClassLibrary1
             {
                  xf = (short)((x * -1) / ((((x * -1) * (-1 * speedMultiplier) + 100) * -1) / 200) / (2 + 3.3 / x_multiplier));
             }
+            int xft = xf;
             int yf = (int)((yr - y_diff) * y_multiplier);
-            only_move_mouse(xf, yf);
+            only_move_mouse(xft, yf);
             Thread.Sleep(5);
             // click_mouse();
 
