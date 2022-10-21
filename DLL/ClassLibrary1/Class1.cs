@@ -62,6 +62,22 @@ namespace ClassLibrary1
             float yr;
             if (y > box_size)
             {
+            float xr;
+            if (x > box_size)
+            {
+                xr = -(960 - x);
+                if ((xf + 960) > 1920)
+                {
+                    xr = 0;
+                }
+            }
+            else
+            {
+                xr = x;
+            }
+            float yr;
+            if (y > box_size)
+            {
                 yr = -(540 - y);
                 if ((yr + 540) > 1080)
                 {
@@ -73,8 +89,8 @@ namespace ClassLibrary1
                 yr = y;
             }
             int yf = (int)((yr - y_diff) * y_multiplier);
-
-            float speedMultiplier = (algo_speed - 10) / (10);
+            int xf = (int)(xr * x_multiplier);
+            /*float speedMultiplier = (x_multiplier - 10) / (10);
             short xf;
             if (x > box_size)
             {
@@ -83,7 +99,12 @@ namespace ClassLibrary1
             else
             {
                 xf = (short)((x * -1) / ((((x * - 1) *(speedMultiplier) + 100) * -1)/200 / 2 + 3.3/ x_multiplier));
-            }
+            }*/
+            only_move_mouse(xf, yf);
+            Thread.Sleep(5);
+            // click_mouse();
+
+        }
             only_move_mouse(xf, yf);
             Thread.Sleep(5);
             // click_mouse();
