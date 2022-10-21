@@ -46,27 +46,11 @@ namespace ClassLibrary1
 
         public void move_mouse(float x, float y, int box_size, float x_multiplier, float y_multiplier, float y_diff)
         {
-            /*float xr;
-            if (x > box_size)
-            {
-                xr = -(960 - x);
-                if ((xr + 960) > 1920)
-                {
-                    xr = 0;
-                }
-            }
-            else
-            {
-                xr = x;
-            }*/
-            float yr;
-            if (y > box_size)
-            {
             float xr;
             if (x > box_size)
             {
                 xr = -(960 - x);
-                if ((xf + 960) > 1920)
+                if ((xr + 960) > 1920)
                 {
                     xr = 0;
                 }
@@ -100,11 +84,6 @@ namespace ClassLibrary1
             {
                 xf = (short)((x * -1) / ((((x * - 1) *(speedMultiplier) + 100) * -1)/200 / 2 + 3.3/ x_multiplier));
             }*/
-            only_move_mouse(xf, yf);
-            Thread.Sleep(5);
-            // click_mouse();
-
-        }
             only_move_mouse(xf, yf);
             Thread.Sleep(5);
             // click_mouse();
