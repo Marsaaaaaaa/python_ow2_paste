@@ -162,7 +162,7 @@ class Grabber:
 
     def trigger(self):
         threading.Thread(target=self._click).start()
-        time.sleep(0.3)
+        #time.sleep(0.3)
 
     def _click(self):        
         ud_mouse.click_mouse()
