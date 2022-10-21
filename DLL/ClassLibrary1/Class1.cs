@@ -1,8 +1,9 @@
-﻿using InputInterceptorNS;
+using InputInterceptorNS;
 using System;
 using System.Runtime.InteropServices;
 using System.Linq;
 using System.Threading;
+using System.Reflection;
 
 namespace ClassLibrary1
 {
@@ -46,19 +47,9 @@ namespace ClassLibrary1
 
         public void move_mouse(float x, float y, int box_size, float x_multiplier, float y_multiplier, float y_diff)
         {
-            float xr;
-            if (x > box_size)
-            {
-                xr = -(960 - x);
-                if ((xr + 960) > 1920)
-                {
-                    xr = 0;
-                }
-            }
-            else
-            {
-                xr = x;
-            }
+
+            float speedMultiplier = (x_multiplier - 10) / (10);
+            short xf;
             float yr;
             if (y > box_size)
             {
@@ -72,18 +63,15 @@ namespace ClassLibrary1
             {
                 yr = y;
             }
-            int yf = (int)((yr - y_diff) * y_multiplier);
-            int xf = (int)(xr * x_multiplier);
-            /*float speedMultiplier = (x_multiplier - 10) / (10);
-            short xf;
-            if (x > box_size)
+            if (x < 0)
             {
-                xf = (short)(x / ((x * (-1 * speedMultiplier) + 100) / 200) / (2 + 3.3 / x_multiplier));
+                 xf = (short)(x / ((x * (-1 * speedMultiplier) + 100) / 200) / (2 + 3.3 / x_multiplier));
             }
             else
             {
-                xf = (short)((x * -1) / ((((x * - 1) *(speedMultiplier) + 100) * -1)/200 / 2 + 3.3/ x_multiplier));
-            }*/
+                 xf = (short)((x * -1) / ((((x * -1) * (-1 * speedMultiplier) + 100) * -1) / 200) / (2 + 3.3 / x_multiplier));
+            }
+            int yf = (int)((yr - y_diff) * y_multiplier);
             only_move_mouse(xf, yf);
             Thread.Sleep(5);
             // click_mouse();
