@@ -16,7 +16,7 @@ I have made changes to the dll so to use this you' ll have to recompile it from 
 
 * InputInterceptor.dll (https://github.com/0x2E757/InputInterceptor) 
 
-* interception.dll (https://github.com/0x2E757/InputInterceptor YOU ALSO NEED TO INSTALL THIS)
+* interception.dll (https://github.com/oblitum/Interception YOU ALSO NEED TO INSTALL THIS)
 
 * ClassLibrary1.dll
 
