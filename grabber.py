@@ -167,14 +167,6 @@ class Grabber:
 
     def trigger(self):
         threading.Thread(target=self._click).start()
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-        #time.sleep(0.3)
->>>>>>> ae9e73f767af793d84ed93c9fde0e50078ec5363
-=======
-        #time.sleep(0.3)
->>>>>>> ae9e73f767af793d84ed93c9fde0e50078ec5363
 
     def _click(self):        
         ud_mouse.click_mouse()
