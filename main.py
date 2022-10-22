@@ -24,12 +24,14 @@ flick_key = 0x12
 # default = v
 trigger_key = 0x39
 
-show_capture = True
+# abilities trigger and flick key disabled until I fix fps issue, if you wanna use em uncomment
+# the lines between 127 and 162 corresponding to the ability you want trigger for
+# (dont uncomment em all it makes ur frames go bye
 
 hitbox_size = 0.6
 flick_hitbox_scale = 1
 abilities_hitbox_scale = 0.8
-# DO NOT SET THIS TO 0 YOU LL HAVE MASSIVE FRAME DROPS
+
 sleep = 1
 
 trigger_magnet = True
@@ -60,10 +62,6 @@ grabber = Grabber(
     trigger_sleep = sleep
 
 )
-
-#closes the cheat
-kill_switch = 0x2E
-
 
 
 #################################################################################################
@@ -114,58 +112,56 @@ while True:
             grabber.move_mouse(x, y)
 
 
-        if flick_key is not None:
-            if grabber.is_activated(flick_key):
-               grabber.flick_mouse(x , y)            
-               if  grabber.on_target(contours, hitbox_size*flick_hitbox_scale):
-                   grabber.trigger()
+        #if flick_key is not None:
+        #    if grabber.is_activated(flick_key):
+        #       grabber.flick_mouse(x , y)            
+        #       if  grabber.on_target(contours, hitbox_size*flick_hitbox_scale):
+        #           grabber.trigger()
+
+
+        if grabber.is_activated(trigger_key):
+              if trigger_magnet:
+                 grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
+              if grabber.on_target(contours, hitbox_size):
+                 grabber.trigger()
+
+
+        #if shift_key is not None:
+        #   if grabber.is_activated(shift_key):
+        #        if shift_magnet:
+        #            grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
+        #        if grabber.on_target(contours, hitbox_size*abilities_hitbox_scale):
+        #            grabber.shift()
 
 
 
-        if trigger_key is not None:
-            if grabber.is_activated(trigger_key):
-                if trigger_magnet:
-                    grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
-                if grabber.on_target(contours, hitbox_size):
-                    grabber.trigger()
-
-
-        if shift_key is not None:
-            if grabber.is_activated(shift_key):
-                if shift_magnet:
-                    grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
-                if grabber.on_target(contours, hitbox_size*abilities_hitbox_scale):
-                    grabber.shift()
-
-
-
-        if Q_key is not None:       
-            if grabber.is_activated(Q_key):
-                if Q_magnet:
-                    grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
-                if grabber.on_target(contours, hitbox_size*abilities_hitbox_scale):
-                   grabber.Q()
-
-
-
-
-        if E_key is not None:        
-            if grabber.is_activated(E_key):
-                if shift_magnet:
-                   grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
-                if grabber.on_target(contours, hitbox_size*abilities_hitbox_scale):
-                   grabber.E()
+        #if Q_key is not None:       
+        #    if grabber.is_activated(Q_key):
+        #        if Q_magnet:
+        #            grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
+        #        if grabber.on_target(contours, hitbox_size*abilities_hitbox_scale):
+        #           grabber.Q()
 
 
 
 
+        #if E_key is not None:        
+        #    if grabber.is_activated(E_key):
+        #        if shift_magnet:
+        #           grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
+        #        if grabber.on_target(contours, hitbox_size*abilities_hitbox_scale):
+        #           grabber.E()
 
-        if right_click_key is not None:        
-            if grabber.is_activated(right_click_key):
-                if right_click_magnet:
-                    grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
-                if grabber.on_target(contours, hitbox_size*abilities_hitbox_scale):
-                    grabber.mouse_right()
+
+
+
+
+        #if right_click_key is not None:        
+        #    if grabber.is_activated(right_click_key):
+        #        if right_click_magnet:
+        #            grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
+        #        if grabber.on_target(contours, hitbox_size*abilities_hitbox_scale):
+        #            grabber.mouse_right()
 
 
         cv2.drawContours(og, contours, -1, (0, 0, 0), 4)
@@ -173,16 +169,13 @@ while True:
             cv2.drawContours(og, rec, -1, (0, 255, 0), 4)
 
 
-    if show_capture:
-        cv2.imshow('frame', og)
-        if (cv2.waitKey(1) & 0x2D) == ord('q'):
-            cv2.destroyAllWindows()
-            exit()
+     # comment the 4 lines below to not show frame capture       
+     cv2.imshow('frame', og)
+     if (cv2.waitKey(1) & 0x2D) == ord('q'):
+         cv2.destroyAllWindows()
+         exit()
 
 
-    if grabber.is_activated(kill_switch):
-        camera.stop()
-        os.kill(PID) 
         
 
 
