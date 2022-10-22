@@ -11,7 +11,7 @@ from numba import jit
 
 import clr
 # change this to wherever your built DLL is
-clr.AddReference(' compiled dll location\\DLL\\ClassLibrary1\\ClassLibrary1.dll')
+clr.AddReference('location\\DLL\\ClassLibrary1\\ClassLibrary1.dll')
 from ClassLibrary1 import Class1
 ud_mouse = Class1()
 ud_mouse.Run_Me()
@@ -21,7 +21,7 @@ ud_mouse.Run_Me()
 
 
 class Grabber:
-    def __init__(self, x_multiplier, y_multiplier, y_difference, flick_speed) -> None:
+    def __init__(self, x_multiplier, y_multiplier, y_difference, flick_speed, trigger_sleep) -> None:
         # self.lower = np.array([139, 96, 129], np.uint8)
         # self.upper = np.array([169, 255, 255], np.uint8)
         self.lower = np.array([139, 95, 154], np.uint8)
@@ -30,6 +30,7 @@ class Grabber:
         self.y_multiplier = y_multiplier         # multiplier on y-coordinate
         self.y_difference = y_difference         # the amount of pixels added to the y-coordinate (aims higher)
         self.flick_speed = flick_speed
+        self.sleep = trigger_sleep
 
     def build_title(self, length) -> str:
         """return a randomly generated window title to prevent detections"""
@@ -138,34 +139,46 @@ class Grabber:
 
     def _shift(self):
         ud_mouse.simulate_shift()
-
+        time.sleep(self.sleep)
+        
     def Q(self):
         threading.Thread(target= self._Q).start()
 
     def _Q(self):
         ud_mouse.simulate_Q()
+        time.sleep(self.sleep)
 
     def E(self):
         threading.Thread(target= self._E).start()
 
     def _E(self):
         ud_mouse.simulate_E()
+        time.sleep(self.sleep)
 
     def mouse_right(self):
         threading.Thread(target= self._mouse_right).start()
 
     def _mouse_right(self):
         ud_mouse.rclick_mouse()        
+        time.sleep(self.sleep)
 
     def click(self):
         threading.Thread(target=self._click).start()
 
     def trigger(self):
         threading.Thread(target=self._click).start()
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
         #time.sleep(0.3)
+>>>>>>> ae9e73f767af793d84ed93c9fde0e50078ec5363
+=======
+        #time.sleep(0.3)
+>>>>>>> ae9e73f767af793d84ed93c9fde0e50078ec5363
 
     def _click(self):        
         ud_mouse.click_mouse()
+        time.sleep(self.sleep)
     
 
 

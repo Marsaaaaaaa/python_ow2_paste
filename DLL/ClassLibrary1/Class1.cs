@@ -1,4 +1,4 @@
-using InputInterceptorNS;
+﻿using InputInterceptorNS;
 using System;
 using System.Runtime.InteropServices;
 using System.Linq;
@@ -48,10 +48,10 @@ namespace ClassLibrary1
         public void move_mouse(float x, float y, int box_size, float x_multiplier, float y_multiplier, float y_diff)
         {
 
-            //float speedMultiplier = (x_multiplier - 10) / (10);
-            //short xf;
+            float speedMultiplier = (x_multiplier - 10) / (10);
+            short xf;
             float yr;
-            float xr;
+            //float xr;
             if (y > box_size)
             {
                 yr = -(540 - y);
@@ -64,20 +64,7 @@ namespace ClassLibrary1
             {
                 yr = y;
             }
-
-            if (x > box_size)
-            {
-                xr = -(960 - x);
-                if ((xr + 960) > 1920)
-                {
-                    xr = 0;
-                }
-            }
-            else
-            {
-                xr = y;
-            }
-            /*if (x < 0)
+            if (x < 0)
             {
                  xf = (short)(x / ((x * (-1 * speedMultiplier) + 100) / 200) / (2 + 3.3 / x_multiplier));
             }
@@ -85,9 +72,7 @@ namespace ClassLibrary1
             {
                  xf = (short)((x * -1) / ((((x * -1) * (-1 * speedMultiplier) + 100) * -1) / 200) / (2 + 3.3 / x_multiplier));
             }
-            int xft = xf;*/
             int yf = (int)((yr - y_diff) * y_multiplier);
-            int xf = (int)(xr * x_multiplier);
             only_move_mouse(xf, yf);
             Thread.Sleep(5);
             // click_mouse();

@@ -1,5 +1,3 @@
-
-from calendar import day_abbr
 from grabber import *
 import time
 from os import system
@@ -31,7 +29,9 @@ show_capture = True
 hitbox_size = 0.6
 flick_hitbox_scale = 1
 abilities_hitbox_scale = 0.8
-trigger_sleep = 0.1
+# DO NOT SET THIS TO 0 YOU LL HAVE MASSIVE FRAME DROPS
+sleep = 1
+
 trigger_magnet = True
 
 magnet_accel = 2
@@ -55,7 +55,10 @@ grabber = Grabber(
     # idk this shit is supposed to set the height of where u aim but I think its broken
     y_difference = 6,
     # flick speed multiplier ( flick speed = x_multiplier*flick_speed)
-    flick_speed = 3
+    flick_speed = 5.5,
+    # DO NOT SET THIS TO 0 YOU LL HAVE MASSIVE FRAME DROPS
+    trigger_sleep = sleep
+
 )
 
 #closes the cheat
@@ -95,13 +98,13 @@ print(f"flick speed = {grabber.flick_speed}")
 
 Dababy = True
 PID = os.getpid()
-counter = 0
-
+#fps = 0
+#start = time.time()
 while True:
 
     og = np.array(camera.get_latest_frame())
     if og is not None:
-        start = time.time()
+        #fps += 1
         frame = grabber.process_frame(og)
         contours = grabber.detect_contours(frame, 900)
 
@@ -116,7 +119,7 @@ while True:
                grabber.flick_mouse(x , y)            
                if  grabber.on_target(contours, hitbox_size*flick_hitbox_scale):
                    grabber.trigger()
-                   time.sleep(trigger_sleep)
+
 
 
         if trigger_key is not None:
@@ -124,26 +127,25 @@ while True:
                 if trigger_magnet:
                     grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
                 if grabber.on_target(contours, hitbox_size):
-                    grabber.shift()
-                    time.sleep(trigger_sleep)
+                    grabber.trigger()
 
 
         if shift_key is not None:
             if grabber.is_activated(shift_key):
                 if shift_magnet:
                     grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
-                if grabber.on_target(contours, hitbox_size):
+                if grabber.on_target(contours, hitbox_size*abilities_hitbox_scale):
                     grabber.shift()
-                    time.sleep(trigger_sleep)
+
 
 
         if Q_key is not None:       
             if grabber.is_activated(Q_key):
                 if Q_magnet:
                     grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
-                if grabber.on_target(contours, hitbox_size):
+                if grabber.on_target(contours, hitbox_size*abilities_hitbox_scale):
                    grabber.Q()
-                   time.sleep(trigger_sleep)
+
 
 
 
@@ -151,9 +153,9 @@ while True:
             if grabber.is_activated(E_key):
                 if shift_magnet:
                    grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
-                if grabber.on_target(contours, hitbox_size):
+                if grabber.on_target(contours, hitbox_size*abilities_hitbox_scale):
                    grabber.E()
-                   time.sleep(trigger_sleep)
+
 
 
 
@@ -164,7 +166,7 @@ while True:
                     grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
                 if grabber.on_target(contours, hitbox_size*abilities_hitbox_scale):
                     grabber.mouse_right()
-                    time.sleep(trigger_sleep)
+
 
         cv2.drawContours(og, contours, -1, (0, 0, 0), 4)
         if rec:
