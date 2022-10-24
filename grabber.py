@@ -81,6 +81,7 @@ class Grabber:
         return large_contours
 
     def scale_contour(self,cnt, scale:float):
+        """Calculates an hitbox for the triggerbot."""
         M = cv2.moments(cnt)
         x = int(M['m10']/M['m00'])
         y = int(M['m01']/M['m00'])
@@ -93,6 +94,7 @@ class Grabber:
         return cnt_scaled
 
     def on_target(self, contour, hitbox):
+        """Calculates if the crosshair is on the trigger hitbox."""
         for c in contour:
             cont = self.scale_contour(c, hitbox)
             test = cv2.pointPolygonTest(cont,( self.box_middle, self.box_middle),False)
@@ -123,10 +125,11 @@ class Grabber:
 
 
     def is_activated(self, key_code) -> bool:
+        """listens for hotkeys."""
         return ud_mouse.is_activated(key_code)
 
-    def flick_mouse(self, x, y):
-        threading.Thread(target=self._move_mouse, args=[x, y, self.x_multiplier*self.flick_speed, self.y_multiplier*(self.flick_speed/2), self.y_difference]).start()
+    
+    # functions below communicate with the wrapper for interception which handles the inputs
 
     def move_mouse(self, x, y):
        threading.Thread(target=self._move_mouse, args=[x, y, self.x_multiplier, self.y_multiplier, self.y_difference]).start()
