@@ -14,24 +14,32 @@ import threading
 fov = 160
 # lower to get more fps but worse performance
 fps = 144
+
 # list of virtual keys: https://learn.microsoft.com/windows/win32/inputdev/virtual-key-codes
+
 # default = mouse1
 aim_key = 0x01
 
+#shoots if enemies are detected inside the crosshair
 trigger_key = 0x39
 
 # abilities trigger disabled until I fix fps issue, if you wanna use em uncomment
 # the lines inside the main loop corresponding to the ability you want trigger for
 # (dont uncomment em all it makes ur frames go bye
 
+# hitbox size for the triggerbots
 hitbox_size = 0.6
 
+# sleep for the triggerbots
 sleep = 1
 
+# aim assist on the triggerbot
 trigger_magnet = True
 
+# speed of the aim assist on triggerbot (x_multiplies*magnet_accel, y_multiplies*(magnet_accel/2))
 magnet_accel = 2
 
+# triggerbot and magnet settings for different abilities
 right_click_key = 0x56
 right_click_magnet = True
 
@@ -48,7 +56,7 @@ grabber = Grabber(
     # x and y accel. higher = faster
     x_multiplier = 0.22,
     y_multiplier = 0.08,
-    # idk this shit is supposed to set the height of where u aim but I think its broken
+    # delta of the y axis, change this in order to shoot higher/ lower
     y_difference = 6,
    
     trigger_sleep = sleep
@@ -57,13 +65,11 @@ grabber = Grabber(
 
 
 #################################################################################################
-#################################################################################################
-#################################################################################################
-#################################################################################################
 
 #obj_flow = Prediction()
 #prediction.screen_size(fov)
 
+# creates a camera of the specified size (fov = 150 then camera will be 150x150 pixels)
 left, top = (1920 - fov) // 2, (1080 - fov) // 2
 right, bottom = left + fov, top + fov
 region = (left, top, right, bottom)
@@ -89,6 +95,9 @@ Dababy = True
 PID = os.getpid()
 #fps = 0
 #start = time.time()
+
+# main loop, processes new frames, if enemies are detected listens to hotkeys 
+# to perform related features
 while True:
 
     og = np.array(camera.get_latest_frame())
