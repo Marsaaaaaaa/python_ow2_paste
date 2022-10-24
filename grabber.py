@@ -21,7 +21,7 @@ ud_mouse.Run_Me()
 
 
 class Grabber:
-    def __init__(self, x_multiplier, y_multiplier, y_difference, flick_speed, trigger_sleep) -> None:
+    def __init__(self, x_multiplier, y_multiplier, y_difference, trigger_sleep) -> None:
         # self.lower = np.array([139, 96, 129], np.uint8)
         # self.upper = np.array([169, 255, 255], np.uint8)
         self.lower = np.array([139, 95, 154], np.uint8)
@@ -29,7 +29,6 @@ class Grabber:
         self.x_multiplier = x_multiplier         # multiplier on x-coordinate
         self.y_multiplier = y_multiplier         # multiplier on y-coordinate
         self.y_difference = y_difference         # the amount of pixels added to the y-coordinate (aims higher)
-        self.flick_speed = flick_speed
         self.sleep = trigger_sleep
 
     def build_title(self, length) -> str:
