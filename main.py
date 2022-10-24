@@ -13,24 +13,18 @@ import threading
 # fov, over 290 will break shit, 
 fov = 160
 # lower to get more fps but worse performance
-fps = 200
+fps = 144
 # list of virtual keys: https://learn.microsoft.com/windows/win32/inputdev/virtual-key-codes
 # default = mouse1
 aim_key = 0x01
 
-# default = alt
-flick_key = 0x12
-
-# default = v
 trigger_key = 0x39
 
-# abilities trigger and flick key disabled until I fix fps issue, if you wanna use em uncomment
-# the lines between 127 and 162 corresponding to the ability you want trigger for
+# abilities trigger disabled until I fix fps issue, if you wanna use em uncomment
+# the lines inside the main loop corresponding to the ability you want trigger for
 # (dont uncomment em all it makes ur frames go bye
 
 hitbox_size = 0.6
-flick_hitbox_scale = 1
-abilities_hitbox_scale = 0.8
 
 sleep = 1
 
@@ -41,13 +35,13 @@ magnet_accel = 2
 right_click_key = 0x56
 right_click_magnet = True
 
-shift_key = None
+shift_key = 0
 shift_magnet = False
 
-Q_key = None
+Q_key = 0
 Q_magnet = False
 
-E_key = None
+E_key = 0
 E_magnet = False
 
 grabber = Grabber(
@@ -56,9 +50,7 @@ grabber = Grabber(
     y_multiplier = 0.08,
     # idk this shit is supposed to set the height of where u aim but I think its broken
     y_difference = 6,
-    # flick speed multiplier ( flick speed = x_multiplier*flick_speed)
-    flick_speed = 5.5,
-    # DO NOT SET THIS TO 0 YOU LL HAVE MASSIVE FRAME DROPS
+   
     trigger_sleep = sleep
 
 )
@@ -76,7 +68,7 @@ left, top = (1920 - fov) // 2, (1080 - fov) // 2
 right, bottom = left + fov, top + fov
 region = (left, top, right, bottom)
 time.sleep(1)
-camera = dxcam.create(region=region, output_color="BGR", max_buffer_len=144)
+camera = dxcam.create(region=region, output_color="BGR", max_buffer_len=60)
 camera.start(target_fps=fps)
 
 
@@ -89,7 +81,6 @@ print(f'box_size = {grabber.box_size}')
 print(f'random_title = {random_title}')
 print(f"x accel = {grabber.x_multiplier}")
 print(f"y accel = {grabber.y_multiplier}")
-print(f"flick speed = {grabber.flick_speed}")
 
 #################################################################################################
 
@@ -112,13 +103,6 @@ while True:
             grabber.move_mouse(x, y)
 
 
-        #if flick_key is not None:
-        #    if grabber.is_activated(flick_key):
-        #       grabber.flick_mouse(x , y)            
-        #       if  grabber.on_target(contours, hitbox_size*flick_hitbox_scale):
-        #           grabber.trigger()
-
-
         if grabber.is_activated(trigger_key):
               if trigger_magnet:
                  grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
@@ -126,42 +110,32 @@ while True:
                  grabber.trigger()
 
 
-        #if shift_key is not None:
-        #   if grabber.is_activated(shift_key):
-        #        if shift_magnet:
-        #            grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
-        #        if grabber.on_target(contours, hitbox_size*abilities_hitbox_scale):
-        #            grabber.shift()
+        #if grabber.is_activated(shift_key):
+        #   if shift_magnet:
+        #       grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
+        #       if grabber.on_target(contours, hitbox_size):
+        #           grabber.shift()
 
+    
+        #if grabber.is_activated(Q_key):
+        #   if Q_magnet:
+        #      grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
+        #      if grabber.on_target(contours, hitbox_size):
+        #         grabber.Q()
 
+      
+        #if grabber.is_activated(E_key):
+        #   if shift_magnet:
+        #      grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
+        #      if grabber.on_target(contours, hitbox_size):
+        #         grabber.E()
 
-        #if Q_key is not None:       
-        #    if grabber.is_activated(Q_key):
-        #        if Q_magnet:
-        #            grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
-        #        if grabber.on_target(contours, hitbox_size*abilities_hitbox_scale):
-        #           grabber.Q()
-
-
-
-
-        #if E_key is not None:        
-        #    if grabber.is_activated(E_key):
-        #        if shift_magnet:
-        #           grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
-        #        if grabber.on_target(contours, hitbox_size*abilities_hitbox_scale):
-        #           grabber.E()
-
-
-
-
-
-        #if right_click_key is not None:        
-        #    if grabber.is_activated(right_click_key):
-        #        if right_click_magnet:
-        #            grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
-        #        if grabber.on_target(contours, hitbox_size*abilities_hitbox_scale):
-        #            grabber.mouse_right()
+     
+        #if grabber.is_activated(right_click_key):
+        #   if right_click_magnet:
+        #       grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
+        #       if grabber.on_target(contours, hitbox_size):
+        #          grabber.mouse_right()
 
 
         cv2.drawContours(og, contours, -1, (0, 0, 0), 4)
