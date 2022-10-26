@@ -2,15 +2,14 @@ Features added:
 
 * triggerbot + magnet.
 
-* abilities triggerbot + magnet.
-
-* shitty flick bot.
+* abilities triggerbot + magnet. (previous releases)
 
 * a much faster screengrab.
 
-* slightly better(?) smooth.
+* better smoothing.
 
 
+Instructions:
 
 I have made changes to the dll so to use this you' ll have to recompile it from the source uploaded here plus having: 
 
@@ -32,6 +31,12 @@ Once thats done edit grabber.py line 14 to the location of the ClassLibrary dll.
 All the settings are in main.py but I dont really use anything else other then the aim key so 
 
 the settings arent tuned well, try messing around with the sleeps and stuff till you find a good balance.
+
+
+In case you dont know how to run a python script: https://pythonbasics.org/execute-python-scripts/
+
+If you dont know how to install python packages (import not recognized error or something like that): https://docs.python.org/3/installing/index.html
+(the clr package is called pythonnet)
 
 
 
