@@ -11,7 +11,7 @@ from numba import jit
 
 import clr
 # change this to wherever your built DLL is
-clr.AddReference('location\\DLL\\ClassLibrary1\\ClassLibrary1.dll')
+clr.AddReference('CHANGE THIS TO THE REST OF THE PATH OF YOUR DIRECTORY\\DLL\\ClassLibrary1\\ClassLibrary1.dll')
 from ClassLibrary1 import Class1
 ud_mouse = Class1()
 ud_mouse.Run_Me()
@@ -80,7 +80,6 @@ class Grabber:
         return large_contours
 
     def scale_contour(self,cnt, scale:float):
-        """Calculates an hitbox for the triggerbot."""
         M = cv2.moments(cnt)
         x = int(M['m10']/M['m00'])
         y = int(M['m01']/M['m00'])
@@ -93,7 +92,6 @@ class Grabber:
         return cnt_scaled
 
     def on_target(self, contour, hitbox):
-        """Calculates if the crosshair is on the trigger hitbox."""
         for c in contour:
             cont = self.scale_contour(c, hitbox)
             test = cv2.pointPolygonTest(cont,( self.box_middle, self.box_middle),False)
@@ -124,11 +122,7 @@ class Grabber:
 
 
     def is_activated(self, key_code) -> bool:
-        """listens for hotkeys."""
         return ud_mouse.is_activated(key_code)
-
-    
-    # functions below communicate with the wrapper for interception which handles the inputs
 
     def move_mouse(self, x, y):
        threading.Thread(target=self._move_mouse, args=[x, y, self.x_multiplier, self.y_multiplier, self.y_difference]).start()
@@ -136,26 +130,26 @@ class Grabber:
     def _move_mouse(self, x, y, x_multiplier, y_multiplier, y_difference):
         ud_mouse.move_mouse(x, y, self.box_size, x_multiplier, y_multiplier, y_difference)
 
-    def shift(self):
-        threading.Thread(target= self._shift).start()
+    #def shift(self):
+    #    threading.Thread(target= self._shift).start()
 
-    def _shift(self):
-        ud_mouse.simulate_shift()
-        time.sleep(self.sleep)
+    #def _shift(self):
+    #    ud_mouse.simulate_shift()
+    #    time.sleep(self.sleep)
 
-    def E(self):
-        threading.Thread(target= self._E).start()
+    #def E(self):
+    #    threading.Thread(target= self._E).start()
 
-    def _E(self):
-        ud_mouse.simulate_E()
-        time.sleep(self.sleep)
+    #def _E(self):
+    #    ud_mouse.simulate_E()
+    #    time.sleep(self.sleep)
 
     def mouse_right(self):
         threading.Thread(target= self._mouse_right).start()
 
     def _mouse_right(self):
         ud_mouse.rclick_mouse()        
-        time.sleep(self.sleep)
+        #time.sleep(self.sleep)
 
     def click(self):
         threading.Thread(target=self._click).start()
