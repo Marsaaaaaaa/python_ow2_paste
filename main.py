@@ -23,15 +23,12 @@ aim_key = 0x01
 #shoots if enemies are detected inside the crosshair
 trigger_key = 0x39
 
-# abilities trigger disabled until I fix fps issue, if you wanna use em uncomment
-# the lines inside the main loop corresponding to the ability you want trigger for
-# (dont uncomment em all it makes ur frames go bye
 
 # hitbox size for the triggerbots
 hitbox_size = 0.6
 
 # sleep for the triggerbots
-sleep = 1
+sleep = 0
 
 # aim assist on the triggerbot
 trigger_magnet = True
@@ -46,8 +43,6 @@ right_click_magnet = True
 shift_key = 0
 shift_magnet = False
 
-Q_key = 0
-Q_magnet = False
 
 E_key = 0
 E_magnet = False
@@ -93,18 +88,15 @@ print(f"y accel = {grabber.y_multiplier}")
 
 Dababy = True
 PID = os.getpid()
-#fps = 0
-#start = time.time()
+
 
 # main loop, processes new frames, if enemies are detected listens to hotkeys 
 # to perform related features
 while True:
 
     og = np.array(camera.get_latest_frame())
-    if og is not None:
-        #fps += 1
-        frame = grabber.process_frame(og)
-        contours = grabber.detect_contours(frame, 900)
+    frame = grabber.process_frame(og)
+    contours = grabber.detect_contours(frame, 900)
 
     if contours:
         rec, x, y = grabber.compute_centroid(contours)
@@ -119,45 +111,26 @@ while True:
                  grabber.trigger()
 
 
-        #if grabber.is_activated(shift_key):
-        #   if shift_magnet:
-        #       grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
-        #       if grabber.on_target(contours, hitbox_size):
-        #           grabber.shift()
+        if grabber.is_activated(shift_key):
+           if shift_magnet:
+               grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
+               if grabber.on_target(contours, hitbox_size):
+                   grabber.shift()
 
-    
-        #if grabber.is_activated(Q_key):
-        #   if Q_magnet:
-        #      grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
-        #      if grabber.on_target(contours, hitbox_size):
-        #         grabber.Q()
 
-      
-        #if grabber.is_activated(E_key):
-        #   if shift_magnet:
-        #      grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
-        #      if grabber.on_target(contours, hitbox_size):
-        #         grabber.E()
+        if grabber.is_activated(E_key):
+           if shift_magnet:
+              grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
+               
+              if grabber.on_target(contours, hitbox_size):
+                   grabber.E()
 
      
-        #if grabber.is_activated(right_click_key):
-        #   if right_click_magnet:
-        #       grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
-        #       if grabber.on_target(contours, hitbox_size):
-        #          grabber.mouse_right()
-
-
-        cv2.drawContours(og, contours, -1, (0, 0, 0), 4)
-        if rec:
-            cv2.drawContours(og, rec, -1, (0, 255, 0), 4)
-
-
-     # comment the 4 lines below to not show frame capture       
-     cv2.imshow('frame', og)
-     if (cv2.waitKey(1) & 0x2D) == ord('q'):
-         cv2.destroyAllWindows()
-         exit()
-
+        if grabber.is_activated(right_click_key):
+           if right_click_magnet:
+               grabber.move_mouse(x*magnet_accel, y*(magnet_accel/2))
+               if grabber.on_target(contours, hitbox_size):
+                  grabber.mouse_right()
 
         
 

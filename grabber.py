@@ -142,13 +142,6 @@ class Grabber:
     def _shift(self):
         ud_mouse.simulate_shift()
         time.sleep(self.sleep)
-        
-    def Q(self):
-        threading.Thread(target= self._Q).start()
-
-    def _Q(self):
-        ud_mouse.simulate_Q()
-        time.sleep(self.sleep)
 
     def E(self):
         threading.Thread(target= self._E).start()
