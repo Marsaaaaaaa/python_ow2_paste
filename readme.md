@@ -22,26 +22,30 @@ I have made changes to the dll so to use this you' ll have to recompile it from 
 All in the same folder. 
 
 Once thats done edit grabber.py line 14 to the location of the ClassLibrary dll.
-
+**Example:**
+```
+clr.AddReference('C:\\Users\\You\\Desktop\\New folder (3)\\DLL\\ClassLibrary1\\ClassLibrary1.dll')
+```
 Then install the required packages by using this command with your python interpreter (opened inside the folder):
 ```
 pip install -r requirements.txt
-
 ```
+In case you dont know how to run a python script: https://pythonbasics.org/execute-python-scripts/
 
 
 
 
+## Settings:
 All the settings are in main.py but I dont really use anything else other then the aim key so 
 
 the they arent tuned well, try messing around with the sleeps and stuff till you find a good balance.
 
 
-In case you dont know how to run a python script: https://pythonbasics.org/execute-python-scripts/
 
 
 
-If you are experiencing frame drops you can try and restart the application every game.
+
+If you are experiencing frame drops you can try restarting the application every game.
 
 I am not sure whats causing it, probably something with dxcam
 
