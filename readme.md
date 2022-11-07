@@ -1,4 +1,4 @@
-Features added:
+## Features added:
 
 * triggerbot + magnet.
 
@@ -9,7 +9,7 @@ Features added:
 * better smoothing.
 
 
-Instructions:
+## Installation:
 
 I have made changes to the dll so to use this you' ll have to recompile it from the source uploaded here plus having: 
 
@@ -21,34 +21,39 @@ I have made changes to the dll so to use this you' ll have to recompile it from 
 
 All in the same folder. 
 
-
-
-
-
-
 Once thats done edit grabber.py line 14 to the location of the ClassLibrary dll.
+
+Then install the required packages by using this command with your python interpreter (opened inside the folder):
+```
+pip install -r requirements.txt
+
+```
+
+
+
 
 All the settings are in main.py but I dont really use anything else other then the aim key so 
 
-the settings arent tuned well, try messing around with the sleeps and stuff till you find a good balance.
+the they arent tuned well, try messing around with the sleeps and stuff till you find a good balance.
 
 
 In case you dont know how to run a python script: https://pythonbasics.org/execute-python-scripts/
 
-If you dont know how to install python packages (import not recognized error or something like that): https://docs.python.org/3/installing/index.html
-(the clr package is called pythonnet)
+
+
+If you are experiencing frame drops you can try and restart the application every game.
+
+I am not sure whats causing it, probably something with dxcam
 
 
 
-
-I dont really code/ know what I am doing and the code is incredibly lazy but still this works fairly well imo.
-
-
-
-Credits: 
+## Credits: 
 
 https://www.unknowncheats.me/forum/members/3853446.html (what this is pasted from)
 
 https://www.unknowncheats.me/forum/valorant/414206-implementing-speed-color-aimbot.html (part of the smooth)
 
 
+
+
+I dont really code/ know what I am doing and the code is incredibly lazy but still this works fairly well imo.
