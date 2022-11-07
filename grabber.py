@@ -6,7 +6,7 @@ import threading
 import time
 import random
 import dxcam
-from numba import jit
+
 
 
 import clr
