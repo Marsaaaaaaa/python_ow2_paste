@@ -51,7 +51,7 @@ namespace ClassLibrary1
             float xr;
             float yr;
             int xf;
-            int yf
+            int yf;
             if (y > box_size)
             {
                 yr = -(540 - y);
