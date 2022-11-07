@@ -51,6 +51,7 @@ namespace ClassLibrary1
             float xr;
             float yr;
             int xf;
+            int yf
             if (y > box_size)
             {
                 yr = -(540 - y);
@@ -87,7 +88,8 @@ namespace ClassLibrary1
                 xf = (short)((xr * -1) / ((((xr * -1) * (-1 * 2) + 100) * -1) / 200) / (2 + 3.3 / x_multiplier));
             }
 
-            int yf = (int)((yr - y_diff) * y_multiplier);
+            yf = (int)((yr - y_diff) * y_multiplier);
+            xf = (int)(xr * x_multiplier);
             only_move_mouse(xf, yf);
             Thread.Sleep(5);
             // click_mouse();
