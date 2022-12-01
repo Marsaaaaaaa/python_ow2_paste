@@ -1,3 +1,14 @@
+## Important information: 
+
+Since blizz has gone back to their old anti-cheat this will now get you screen-locked
+
+(and potentially banned in the future)
+
+
+
+
+
+
 ## Features added:
 
 * triggerbot + magnet.
