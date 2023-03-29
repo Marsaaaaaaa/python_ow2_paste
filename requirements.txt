@@ -1,6 +1,5 @@
 dxcam==0.0.5
-numpy==1.23.4
-opencv_python==4.6.0.66
-pythonnet==3.0.1
-pywin32==304
+numpy==1.21.5
+pythonnet==3.0.0.post1
+pywin32==302
 

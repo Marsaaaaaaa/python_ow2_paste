@@ -1,6 +1,5 @@
 
 import cv2
-import win32api, win32con, win32ui, win32gui
 import numpy as np
 import threading
 import time
