@@ -6,7 +6,7 @@ import threading
 import time
 import random
 import dxcam
-
+from win32api import GetSystemMetrics
 
 
 import clr
@@ -17,19 +17,16 @@ ud_mouse = Class1()
 ud_mouse.Run_Me()
 
 
-#predict = Prediction()
+
 
 
 class Grabber:
-    def __init__(self, x_multiplier, y_multiplier, y_difference, trigger_sleep) -> None:
-        # self.lower = np.array([139, 96, 129], np.uint8)
-        # self.upper = np.array([169, 255, 255], np.uint8)
+    def __init__(self, x_multiplier, y_multiplier, y_difference) -> None:
         self.lower = np.array([139, 95, 154], np.uint8)
         self.upper = np.array([153, 255, 255], np.uint8)
         self.x_multiplier = x_multiplier         # multiplier on x-coordinate
         self.y_multiplier = y_multiplier         # multiplier on y-coordinate
         self.y_difference = y_difference         # the amount of pixels added to the y-coordinate (aims higher)
-        self.sleep = trigger_sleep
 
     def build_title(self, length) -> str:
         """return a randomly generated window title to prevent detections"""
@@ -47,8 +44,8 @@ class Grabber:
         """Calculates constants required for the bot."""
         self.box_size = box_size
         self.box_middle = int(self.box_size / 2) 
-        self.y = int(((1080 / 2) - (self.box_size / 2))) 
-        self.x = int(((1920 / 2) - (self.box_size / 2))) 
+        self.y = int(((GetSystemMetrics(1)   / 2) - (self.box_size / 2))) 
+        self.x = int(((GetSystemMetrics(0) / 2) - (self.box_size / 2))) 
 
         
 
@@ -130,26 +127,11 @@ class Grabber:
     def _move_mouse(self, x, y, x_multiplier, y_multiplier, y_difference):
         ud_mouse.move_mouse(x, y, self.box_size, x_multiplier, y_multiplier, y_difference)
 
-    #def shift(self):
-    #    threading.Thread(target= self._shift).start()
-
-    #def _shift(self):
-    #    ud_mouse.simulate_shift()
-    #    time.sleep(self.sleep)
-
-    #def E(self):
-    #    threading.Thread(target= self._E).start()
-
-    #def _E(self):
-    #    ud_mouse.simulate_E()
-    #    time.sleep(self.sleep)
-
     def mouse_right(self):
         threading.Thread(target= self._mouse_right).start()
 
     def _mouse_right(self):
         ud_mouse.rclick_mouse()        
-        #time.sleep(self.sleep)
 
     def click(self):
         threading.Thread(target=self._click).start()
@@ -159,7 +141,5 @@ class Grabber:
 
     def _click(self):        
         ud_mouse.click_mouse()
-        time.sleep(self.sleep)
-    
 
 
