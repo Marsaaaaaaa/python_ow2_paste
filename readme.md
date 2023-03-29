@@ -11,7 +11,7 @@ Since blizz has gone back to their old anti-cheat this will now get you screen-l
 
 ## Features added:
 
-* triggerbot + magnet.
+* triggerbot.
 
 * abilities triggerbot + magnet. (previous releases)
 
